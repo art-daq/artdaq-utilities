@@ -1,17 +1,18 @@
 #include "TRACE/trace.h"
 #define TRACE_NAME "SystemMetricCollector"
 
+#include "SystemMetricCollector.hh"
+
+#include <sys/sysinfo.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <chrono>
 #include <fstream>
-#include "SystemMetricCollector.hh"
-#include "sys/sysinfo.h"
-#include "sys/types.h"
-#include "unistd.h"
 
-#define MLEVEL_PROCESS 6
-#define MLEVEL_CPU 7
-#define MLEVEL_RAM 8
-#define MLEVEL_NETWORK 9
+constexpr int MLEVEL_PROCESS = 6;
+constexpr int MLEVEL_CPU = 7;
+constexpr int MLEVEL_RAM = 8;
+constexpr int MLEVEL_NETWORK = 9;
 
 artdaq::SystemMetricCollector::SystemMetricCollector(bool processMetrics, bool systemMetrics)
     : cpuCount_(GetCPUCount_())
@@ -49,12 +50,12 @@ void artdaq::SystemMetricCollector::GetSystemCPUUsage()
 		return;
 	}
 
-	nonIdleCPUPercent_ = (thisCPU.totalUsage - lastCPU_.totalUsage) * 100.0 * cpuCount_ / total;
-	userCPUPercent_ = (thisCPU.user + thisCPU.nice - lastCPU_.user - lastCPU_.nice) * 100.0 * cpuCount_ / total;
-	systemCPUPercent_ = (thisCPU.system - lastCPU_.system) * 100.0 * cpuCount_ / total;
-	idleCPUPercent_ = (thisCPU.idle - lastCPU_.idle) * 100.0 * cpuCount_ / total;
-	iowaitCPUPercent_ = (thisCPU.iowait - lastCPU_.iowait) * 100.0 * cpuCount_ / total;
-	irqCPUPercent_ = (thisCPU.irq + thisCPU.softirq - lastCPU_.irq - lastCPU_.softirq) * 100.0 * cpuCount_ / total;
+	nonIdleCPUPercent_ = static_cast<double>(thisCPU.totalUsage - lastCPU_.totalUsage) * 100.0 * cpuCount_ / total;
+	userCPUPercent_ = static_cast<double>(thisCPU.user + thisCPU.nice - lastCPU_.user - lastCPU_.nice) * 100.0 * cpuCount_ / total;
+	systemCPUPercent_ = static_cast<double>(thisCPU.system - lastCPU_.system) * 100.0 * cpuCount_ / total;
+	idleCPUPercent_ = static_cast<double>(thisCPU.idle - lastCPU_.idle) * 100.0 * cpuCount_ / total;
+	iowaitCPUPercent_ = static_cast<double>(thisCPU.iowait - lastCPU_.iowait) * 100.0 * cpuCount_ / total;
+	irqCPUPercent_ = static_cast<double>(thisCPU.irq + thisCPU.softirq - lastCPU_.irq - lastCPU_.softirq) * 100.0 * cpuCount_ / total;
 
 	lastCPU_ = thisCPU;
 }
@@ -128,7 +129,7 @@ double artdaq::SystemMetricCollector::GetAvailableRAMPercent(bool buffers)
 uint64_t artdaq::SystemMetricCollector::GetProcessMemUsage()
 {
 	auto filp = fopen("/proc/self/statm", "r");
-	uint64_t mem;
+	uint64_t mem = 0;
 	fscanf(filp, "%*u %lu", &mem);  // NOLINT(cert-err34-c) Proc files are defined by the kernel API, and will not have unexpected values
 	fclose(filp);
 	return mem * sysconf(_SC_PAGESIZE);
@@ -163,14 +164,14 @@ uint64_t artdaq::SystemMetricCollector::GetNetworkReceiveErrors(std::string ifna
 uint64_t artdaq::SystemMetricCollector::GetNetworkTCPRetransSegs()
 {
 	auto filp = fopen("/proc/net/snmp", "r");
-#define BFSZ_ 200
-	char tcp_lbls[BFSZ_];
-	char tcp_data[BFSZ_];
+#define BFSZ_ 200          // NOLINT
+	char tcp_lbls[BFSZ_];  // NOLINT
+	char tcp_data[BFSZ_];  // NOLINT
 	char* bufptr = tcp_lbls;
 
 	// find the Tcp line token
-#define TCP_LINE_TKN_ "Tcp:"
-#define TCP_RETRANSSEGS_TKN_ "RetransSegs"
+#define TCP_LINE_TKN_ "Tcp:"                // NOLINT
+#define TCP_RETRANSSEGS_TKN_ "RetransSegs"  // NOLINT
 	uint64_t retranssegs = 0;
 	while (fgets(bufptr, BFSZ_ - 1, filp) != nullptr)
 		if (strstr(bufptr, TCP_LINE_TKN_))
@@ -179,10 +180,10 @@ uint64_t artdaq::SystemMetricCollector::GetNetworkTCPRetransSegs()
 			fgets(tcp_data, BFSZ_ - 1, filp);
 			tokn_name = strtok_r(tcp_lbls, " ", &tokn_save);
 			tokn_data = strtok_r(tcp_data, " ", &data_save);
-			while (tokn_name != NULL && strcmp(tokn_name, TCP_RETRANSSEGS_TKN_) != 0)
+			while (tokn_name != NULL && strcmp(tokn_name, TCP_RETRANSSEGS_TKN_) != 0)  // NOLINT
 			{
-				tokn_name = strtok_r(NULL, " ", &tokn_save);
-				tokn_data = strtok_r(NULL, " ", &data_save);
+				tokn_name = strtok_r(NULL, " ", &tokn_save);  // NOLINT
+				tokn_data = strtok_r(NULL, " ", &data_save);  // NOLINT
 			}
 			if (tokn_name) retranssegs = strtoull(tokn_data, 0, 0);
 			break;
@@ -311,7 +312,7 @@ artdaq::SystemMetricCollector::netstats artdaq::SystemMetricCollector::ReadProcN
 		fgets(buf, 200, filp);
 	}
 
-	uint64_t rbytes, rerrs, rdrop, rfifo, rframe, tbytes, terrs, tdrop, tfifo, tcolls, tcarrier;
+	uint64_t rbytes{0}, rerrs{0}, rdrop{0}, rfifo{0}, rframe{0}, tbytes{0}, terrs{0}, tdrop{0}, tfifo{0}, tcolls{0}, tcarrier{0};
 
 	while (fgets(buf, 200, filp) != nullptr)
 	{

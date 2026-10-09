@@ -1,6 +1,6 @@
 
 #define TRACE_NAME "MetricManager_t"
-#include "trace.h"
+#include "TRACE/trace.h"
 
 #include "artdaq-utilities/Plugins/MetricManager.hh"
 #include "artdaq-utilities/Plugins/TestMetric.hh"

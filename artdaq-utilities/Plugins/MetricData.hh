@@ -1,5 +1,5 @@
-#ifndef ARTDAQ_UTILITIES_PLUGINS_METRICDATA_HH
-#define ARTDAQ_UTILITIES_PLUGINS_METRICDATA_HH
+#ifndef ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_METRICDATA_HH_
+#define ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_METRICDATA_HH_
 
 #include <atomic>
 #include <bitset>
@@ -7,6 +7,7 @@
 #include <limits>
 #include <list>
 #include <sstream>
+#include <string>
 
 namespace artdaq {
 /// <summary>
@@ -439,8 +440,14 @@ struct MetricData
 		if (modeSet.count() <= 1) return false;
 
 		auto count = modeSet.count();
-		if ((Mode & MetricMode::Persist) != MetricMode::None) count--;
-		if ((Mode & MetricMode::Delta) != MetricMode::None) count--;
+		if ((Mode & MetricMode::Persist) != MetricMode::None)
+		{
+			count--;
+		}
+		if ((Mode & MetricMode::Delta) != MetricMode::None)
+		{
+			count--;
+		}
 
 		return count > 1;
 	}
@@ -478,4 +485,4 @@ struct MetricData
 
 }  // namespace artdaq
 
-#endif /* ARTDAQ_UTILITIES_PLUGINS_METRICDATA_HH */
+#endif  // ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_METRICDATA_HH_

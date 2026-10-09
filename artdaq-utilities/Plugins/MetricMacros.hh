@@ -1,13 +1,14 @@
-#ifndef artdaq_Plugins_MetricMacros_hh
-#define artdaq_Plugins_MetricMacros_hh
+#ifndef ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_METRICMACROS_HH_
+#define ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_METRICMACROS_HH_
 
 #include "artdaq-utilities/Plugins/MetricPlugin.hh"
 namespace fhicl {
 class ParameterSet;
-}
+}  // namespace fhicl
 #include "cetlib/compiler_macros.h"
 
 #include <memory>
+#include <string>
 
 namespace artdaq {
 /**
@@ -20,9 +21,11 @@ typedef std::unique_ptr<artdaq::MetricPlugin> makeFunc_t(fhicl::ParameterSet con
 }  // namespace artdaq
 
 #ifndef EXTERN_C_FUNC_DECLARE_START
+// NOLINTNEXTLINE
 #define EXTERN_C_FUNC_DECLARE_START extern "C" {
 #endif
 
+// NOLINTNEXTLINE
 #define DEFINE_ARTDAQ_METRIC(klass)                                                                  \
 	EXTERN_C_FUNC_DECLARE_START                                                                      \
 	std::unique_ptr<artdaq::MetricPlugin>                                                            \
@@ -32,4 +35,4 @@ typedef std::unique_ptr<artdaq::MetricPlugin> makeFunc_t(fhicl::ParameterSet con
 	}                                                                                                \
 	}
 
-#endif /* artdaq_Plugins_MetricMacros_hh */
+#endif  // ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_METRICMACROS_HH_

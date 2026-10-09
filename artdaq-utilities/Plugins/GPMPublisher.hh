@@ -1,10 +1,11 @@
 // Defines the interface that all general-purpose-messaging publishers in ARTDAQ must implement
 
-#ifndef __GPM_PUBLISHER_INTERFACE__
-#define __GPM_PUBLISHER_INTERFACE__
+#ifndef ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_GPMPUBLISHER_HH_
+#define ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_GPMPUBLISHER_HH_
+
+#include "fhiclcpp/ParameterSet.h"
 
 #include <string>
-#include "fhiclcpp/ParameterSet.h"
 
 namespace artdaq {
 /**
@@ -47,4 +48,4 @@ protected:
 };
 }  // End namespace artdaq
 
-#endif  // End ifndef __GPM_PUBLISHER_INTERFACE__
+#endif  // ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_GPMPUBLISHER_HH_

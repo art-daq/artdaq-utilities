@@ -1,5 +1,5 @@
-#ifndef artdaq_DAQrate_MetricManager_hh
-#define artdaq_DAQrate_MetricManager_hh
+#ifndef ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_METRICMANAGER_HH_
+#define ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_METRICMANAGER_HH_
 
 // MetricManager class definition file
 // Author: Eric Flumerfelt
@@ -15,7 +15,7 @@
 
 namespace fhicl {
 class ParameterSet;
-}
+}  // namespace fhicl
 
 #include "fhiclcpp/types/Atom.h"
 #include "fhiclcpp/types/Comment.h"
@@ -26,12 +26,16 @@ class ParameterSet;
 #include <atomic>
 #include <boost/thread.hpp>
 #include <condition_variable>
+#include <memory>
 #include <queue>
 #include <sstream>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace artdaq {
 class MetricManager;
-}
+}  // namespace artdaq
 
 /**
  * \brief The MetricManager class handles loading metric plugins and asynchronously sending metric data to them.
@@ -310,4 +314,4 @@ private:
 	std::chrono::steady_clock::time_point last_failure_;
 };
 
-#endif /* artdaq_DAQrate_MetricManager_hh */
+#endif  // ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_METRICMANAGER_HH_

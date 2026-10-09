@@ -2,15 +2,15 @@
  * \file TestMetric.hh: Static storage for testing Metric system
  */
 
-#ifndef __ARTDAQ_UTILITIES_PLUGINS_TESTMETRIC_HH_
-#define __ARTDAQ_UTILITIES_PLUGINS_TESTMETRIC_HH_
+#ifndef ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_TESTMETRIC_HH_
+#define ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_TESTMETRIC_HH_
+
+#include "TRACE/trace.h"
 
 #include <chrono>
 #include <list>
 #include <mutex>
 #include <string>
-
-#include "TRACE/trace.h"
 
 namespace artdaq {
 /// <summary>
@@ -71,4 +71,4 @@ public:
 };
 }  // namespace artdaq
 
-#endif  // __ARTDAQ_UTILITIES_PLUGINS_TESTMETRIC_HH_
+#endif  // ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_TESTMETRIC_HH_

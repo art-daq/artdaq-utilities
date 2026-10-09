@@ -1,11 +1,13 @@
-#ifndef artdaq_Plugins_makeGPMPlugins_hh
-#define artdaq_Plugins_makeGPMPlugins_hh
+#ifndef ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_MAKEGPMPLUGINS_HH_
+#define ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_MAKEGPMPLUGINS_HH_
 
 // Using LibraryManager, find the correct library and return an instance
 // of the specified generator.
 
-#include <memory>
 #include "fhiclcpp/fwd.h"
+
+#include <memory>
+#include <string>
 
 /**
  * \brief The artdaq namespace
@@ -36,4 +38,4 @@ std::unique_ptr<GPMSubscriber>
 makeGPMSubscriber(std::string const& generator_plugin_spec,
                   fhicl::ParameterSet const& ps, std::string const& application_name);
 }  // namespace artdaq
-#endif /* artdaq_Plugins_makeGPMPlugins_hh */
+#endif  // ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_MAKEGPMPLUGINS_HH_

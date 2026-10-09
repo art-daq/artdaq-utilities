@@ -33,17 +33,6 @@ namespace artdaq {
  */
 class GraphiteMetric final : public MetricPlugin
 {
-private:
-	std::string host_;
-	int port_;
-	std::string namespace_;
-	std::vector<std::string> delimiters_;
-	boost::asio::io_service io_service_;
-	tcp::socket socket_;
-	bool stopped_;
-	int errorCount_;
-	std::chrono::steady_clock::time_point waitStart_;
-
 public:
 	/**
 	 * \brief GraphiteMetric Constructor
@@ -94,7 +83,7 @@ public:
 	void sendMetric_(const std::string& name, const std::string& value, const std::string& /*unit*/, const std::chrono::system_clock::time_point& time) override
 	{
 		// Coerce to number
-		std::string coercedValue = std::to_string(strtod(value.c_str(), NULL));
+		std::string coercedValue = std::to_string(strtod(value.c_str(), NULL));  // NOLINT
 		sendToGraphite(name, coercedValue, time);
 	}
 
@@ -175,7 +164,7 @@ public:
 			{
 				METLOG(TLVL_WARNING) << "In destructor of GraphiteMetric instance associated with " << host_ << ":" << port_ << ", the following boost::system::system_error exception was thrown out of a call to stopMetrics() and caught: " << err.code() << ", \"" << err.what() << "\"";
 			}
-			catch (...)
+			catch (...)  // NOLINT
 			{
 				METLOG(TLVL_WARNING) << "In destructor of GraphiteMetric instance associated with " << host_ << ":" << port_ << ", an *unknown* exception was thrown out of a call to stopMetrics() and caught!";
 			}
@@ -238,6 +227,16 @@ private:
 			}
 		}
 	}
+
+	std::string host_;
+	int port_;
+	std::string namespace_;
+	std::vector<std::string> delimiters_;
+	boost::asio::io_service io_service_;
+	tcp::socket socket_;
+	bool stopped_;
+	int errorCount_;
+	std::chrono::steady_clock::time_point waitStart_;
 };
 }  // End namespace artdaq
 

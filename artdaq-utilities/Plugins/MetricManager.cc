@@ -16,7 +16,11 @@
 #include <pthread.h>
 #include <boost/exception/all.hpp>
 #include <chrono>
+#include <list>
 #include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 artdaq::MetricManager::MetricManager()
     : metric_plugins_(0)
@@ -108,7 +112,7 @@ void artdaq::MetricManager::initialize(fhicl::ParameterSet const& pset, std::str
 				TLOG(TLVL_ERROR) << "Exception caught in MetricManager::initialize, error loading plugin with name " << name
 				                 << ", std::exception caught: " << e.what();
 			}
-			catch (...)
+			catch (...)  // NOLINT
 			{
 				TLOG(TLVL_ERROR) << "Unknown Exception caught in MetricManager::initialize, error loading plugin with name "
 				                 << name;
@@ -142,7 +146,7 @@ void artdaq::MetricManager::do_start()
 				TLOG(TLVL_INFO) << "Metric Plugin " << metric->getLibName() << " started.";
 				active_ = true;
 			}
-			catch (...)
+			catch (...)  // NOLINT
 			{
 				TLOG(TLVL_ERROR) << "Exception caught in MetricManager::do_start(), error starting plugin with name "
 				                 << metric->getLibName();
@@ -168,7 +172,7 @@ void artdaq::MetricManager::do_stop()
 			metric_sending_thread_.join();
 		}
 	}
-	catch (...)
+	catch (...)  // NOLINT
 	{
 		// IGNORED
 	}
@@ -176,10 +180,10 @@ void artdaq::MetricManager::do_stop()
 }
 
 void artdaq::MetricManager::do_pause()
-{ /*do_stop();*/
+{  // do_stop();
 }
 void artdaq::MetricManager::do_resume()
-{ /*do_start();*/
+{  // do_start();
 }
 
 void artdaq::MetricManager::reinitialize(fhicl::ParameterSet const& pset, std::string const& prefix)
@@ -206,7 +210,7 @@ void artdaq::MetricManager::shutdown()
 				i.reset(nullptr);
 				TRACE_STREAMER(TLVL_DEBUG + 32, TLOG2("MetricManager", 0), 0) << "Metric Plugin " << name << " shutdown.";
 			}
-			catch (...)
+			catch (...)  // NOLINT
 			{
 				TRACE_STREAMER(TLVL_ERROR, TLOG2("MetricManager", 0), 0) << "Exception caught in MetricManager::shutdown(), error shutting down metric with name "
 				                                                         << i->getLibName();
@@ -265,7 +269,7 @@ void artdaq::MetricManager::sendMetric(std::string const& name, std::string cons
 					else
 					{
 						cached->StringValue += " " + value;
-						cached->DataPointCount++;
+						cached->DataPointCount++;  // NOLINT(runtime/increment_decrement)
 					}
 				}
 				else
@@ -515,7 +519,7 @@ void artdaq::MetricManager::startMetricLoop_()
 	{
 		TLOG(TLVL_ERROR) << "Caught boost::exception starting Metric Sending thread: " << boost::diagnostic_information(e)
 		                 << ", errno=" << errno;
-		std::cerr << "Caught boost::exception starting Metric Sending thread: " << boost::diagnostic_information(e)
+		std::cerr << "Caught boost::exception starting Metric Sending thread: " << boost::diagnostic_information(e)  // NOLINT(runtime/output_format)
 		          << ", errno=" << errno << std::endl;
 		exit(5);
 	}
@@ -694,7 +698,7 @@ void artdaq::MetricManager::sendMetricLoop_()
 						metric->addMetricData(data_);
 						last_send_time = std::chrono::steady_clock::now();
 					}
-					catch (...)
+					catch (...)  // NOLINT
 					{
 						TLOG(TLVL_ERROR) << "Error in MetricManager::sendMetric: error sending value to metric plugin with name "
 						                 << metric->getLibName();
@@ -779,7 +783,7 @@ void artdaq::MetricManager::sendMetricLoop_()
 					metric->addMetricData(data_);
 					last_send_time = std::chrono::steady_clock::now();
 				}
-				catch (...)
+				catch (...)  // NOLINT
 				{
 					TLOG(TLVL_ERROR) << "Error in MetricManager::sendMetric: error sending value to metric plugin with name "
 					                 << metric->getLibName();
@@ -799,7 +803,7 @@ void artdaq::MetricManager::sendMetricLoop_()
 			metric->stopMetrics();
 			TLOG(TLVL_DEBUG + 32) << "Metric Plugin " << metric->getLibName() << " stopped.";
 		}
-		catch (...)
+		catch (...)  // NOLINT
 		{
 			TLOG(TLVL_ERROR) << "Exception caught in MetricManager::do_stop(), error stopping plugin with name "
 			                 << metric->getLibName();
@@ -807,4 +811,4 @@ void artdaq::MetricManager::sendMetricLoop_()
 	}
 	busy_ = false;
 	TLOG(TLVL_DEBUG + 32) << "MetricManager has been stopped.";
-}
+}  // NOLINT(readability/fn_size)

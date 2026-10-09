@@ -4,9 +4,9 @@
 //
 // An implementation of the MetricPlugin for TRACE
 
+#include "TRACE/trace.h"
 #include "artdaq-utilities/Plugins/MetricMacros.hh"
 #include "fhiclcpp/ParameterSet.h"
-#include "trace.h"
 
 namespace artdaq {
 /**
@@ -14,11 +14,6 @@ namespace artdaq {
  */
 class TRACEMetric : public MetricPlugin
 {
-private:
-	bool stopped_;
-	std::string name_;
-	int lvl_;
-
 public:
 	/**
 	 * \brief TRACEMetric Constructor. Opens the file and starts the metric
@@ -116,7 +111,7 @@ public:
 	 * \param value Value of the metric
 	 * \param unit Units of the metric
 	 */
-	void sendMetric_(const std::string& name, const unsigned long int& value, const std::string& unit, const std::chrono::system_clock::time_point&) override
+	void sendMetric_(const std::string& name, const unsigned long int& value, const std::string& unit, const std::chrono::system_clock::time_point&) override  // NOLINT
 	{
 		if (!stopped_ && !inhibit_)
 		{
@@ -143,6 +138,9 @@ public:
 	}
 
 private:
+	bool stopped_;
+	std::string name_;
+	int lvl_;
 };
 }  // End namespace artdaq
 

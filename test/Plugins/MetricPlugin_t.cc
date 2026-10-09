@@ -32,32 +32,32 @@ public:
 	/**
 	 * \brief Send a String metric, record the call and discard the metric's data
 	 */
-	virtual void sendMetric_(const std::string&, const std::string&, const std::string&, const std::chrono::system_clock ::time_point&) override { sendMetric_string_calls++; }
+	void sendMetric_(const std::string&, const std::string&, const std::string&, const std::chrono::system_clock ::time_point&) override { sendMetric_string_calls++; }  // NOLINT
 	/**
 	 * \brief Send an int metric, record the call and discard the metric's data
 	 */
-	virtual void sendMetric_(const std::string&, const int&, const std::string&, const std::chrono::system_clock ::time_point&) override { sendMetric_int_calls++; }
+	void sendMetric_(const std::string&, const int&, const std::string&, const std::chrono::system_clock ::time_point&) override { sendMetric_int_calls++; }  // NOLINT
 	/**
 	 * \brief Send a double metric, record the call and discard the metric's data
 	 */
-	virtual void sendMetric_(const std::string&, const double&, const std::string&, const std::chrono::system_clock ::time_point&) override { sendMetric_double_calls++; }
+	void sendMetric_(const std::string&, const double&, const std::string&, const std::chrono::system_clock ::time_point&) override { sendMetric_double_calls++; }  // NOLINT
 	/**
 	 * \brief Send a float metric, record the call and discard the metric's data
 	 */
-	virtual void sendMetric_(const std::string&, const float&, const std::string&, const std::chrono::system_clock ::time_point&) override { sendMetric_float_calls++; }
+	void sendMetric_(const std::string&, const float&, const std::string&, const std::chrono::system_clock ::time_point&) override { sendMetric_float_calls++; }  // NOLINT
 	/**
 	 * \brief Send an unsigned metric, record the call and discard the metric's data
 	 */
-	virtual void sendMetric_(const std::string&, const uint64_t&, const std::string&, const std::chrono::system_clock ::time_point&) override { sendMetric_unsigned_calls++; }
+	void sendMetric_(const std::string&, const uint64_t&, const std::string&, const std::chrono::system_clock ::time_point&) override { sendMetric_unsigned_calls++; }  // NOLINT
 
 	/**
 	 * \brief Record that a startMetrics call was received
 	 */
-	void startMetrics_() override { startMetrics_calls++; }
+	void startMetrics_() override { startMetrics_calls++; }  // NOLINT
 	/**
 	 * \brief Record that a stopMetrics call was received
 	 */
-	void stopMetrics_() override { stopMetrics_calls++; }
+	void stopMetrics_() override { stopMetrics_calls++; }  // NOLINT
 
 	size_t sendMetric_string_calls;    ///< The number of string metric calls received
 	size_t sendMetric_int_calls;       ///< The number of int metric calls received
