@@ -204,7 +204,7 @@ public:
 				str += value.first + ": " + value.second + "\n";
 				// snprintf(buf, sizeof(buf), "%s: %lu\n", value.first.c_str(), value.second);
 			}
-			int sts = write(fd, str.c_str(), str.size()); // NOLINT
+			int sts = write(fd, str.c_str(), str.size());  // NOLINT
 			METLOG(TLVL_DEBUG + 36) << "writePipe write complete sts=" << sts;
 			close(fd);
 			METLOG(TLVL_DEBUG + 36) << "writePipe after close -- about to usleep";
