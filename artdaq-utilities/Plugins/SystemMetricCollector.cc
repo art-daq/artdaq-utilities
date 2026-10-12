@@ -78,7 +78,7 @@ double artdaq::SystemMetricCollector::GetProcessCPUUsagePercent()
 	lastProcessCPUTime_ = now;
 	lastProcessCPUTimes_ = this_times;
 
-	return (utime + stime) * 100.0 / static_cast<double>(delta_t);
+	return static_cast<double>(utime + stime) * 100.0 / static_cast<double>(delta_t);
 }
 
 uint64_t artdaq::SystemMetricCollector::GetAvailableRAM()
@@ -121,7 +121,7 @@ double artdaq::SystemMetricCollector::GetAvailableRAMPercent(bool buffers)
 	if (err == 0 && meminfo.totalram > 0)
 	{
 		auto available = meminfo.freeram + (buffers ? meminfo.bufferram : 0);
-		return available * 100.0 / static_cast<double>(meminfo.totalram);
+		return static_cast<double>(available) * 100.0 / static_cast<double>(meminfo.totalram);
 	}
 	return 0.0;
 }
@@ -140,7 +140,7 @@ double artdaq::SystemMetricCollector::GetProcessMemUsagePercent()
 	auto proc = GetProcessMemUsage();
 	auto total = GetTotalRAM();
 	if (total == 0) return 0;
-	return proc * 100.0 / static_cast<double>(total);
+	return static_cast<double>(proc) * 100.0 / static_cast<double>(total);
 }
 
 uint64_t artdaq::SystemMetricCollector::GetNetworkReceiveBytes(std::string ifname)
@@ -176,7 +176,7 @@ uint64_t artdaq::SystemMetricCollector::GetNetworkTCPRetransSegs()
 	while (fgets(bufptr, BFSZ_ - 1, filp) != nullptr)
 		if (strstr(bufptr, TCP_LINE_TKN_))
 		{
-			char *tokn_name, *tokn_data, *tokn_save, *data_save;
+			char *tokn_name, *tokn_data, *tokn_save, *data_save; // NOLINT
 			fgets(tcp_data, BFSZ_ - 1, filp);
 			tokn_name = strtok_r(tcp_lbls, " ", &tokn_save);
 			tokn_data = strtok_r(tcp_data, " ", &data_save);
@@ -185,7 +185,7 @@ uint64_t artdaq::SystemMetricCollector::GetNetworkTCPRetransSegs()
 				tokn_name = strtok_r(NULL, " ", &tokn_save);  // NOLINT
 				tokn_data = strtok_r(NULL, " ", &data_save);  // NOLINT
 			}
-			if (tokn_name) retranssegs = strtoull(tokn_data, 0, 0);
+			if (tokn_name) retranssegs = strtoull(tokn_data, 0, 0); // NOLINT
 			break;
 		}
 	TRACE(TLVL_DEBUG + 10, "retranssegs=%lu", retranssegs);
@@ -302,7 +302,7 @@ size_t artdaq::SystemMetricCollector::GetCPUCount_()
 artdaq::SystemMetricCollector::netstats artdaq::SystemMetricCollector::ReadProcNetDev_()
 {
 	auto filp = fopen("/proc/net/dev", "r");
-	char buf[200], ifname_c[20];
+	char buf[200], ifname_c[20]; // NOLINT
 	auto start_time = std::chrono::steady_clock::now();
 	netstats output;
 
@@ -312,7 +312,7 @@ artdaq::SystemMetricCollector::netstats artdaq::SystemMetricCollector::ReadProcN
 		fgets(buf, 200, filp);
 	}
 
-	uint64_t rbytes{0}, rerrs{0}, rdrop{0}, rfifo{0}, rframe{0}, tbytes{0}, terrs{0}, tdrop{0}, tfifo{0}, tcolls{0}, tcarrier{0};
+	uint64_t rbytes{0}, rerrs{0}, rdrop{0}, rfifo{0}, rframe{0}, tbytes{0}, terrs{0}, tdrop{0}, tfifo{0}, tcolls{0}, tcarrier{0}; // NOLINT
 
 	while (fgets(buf, 200, filp) != nullptr)
 	{

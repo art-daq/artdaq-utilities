@@ -11,6 +11,7 @@
 
 BOOST_AUTO_TEST_SUITE(MetricManager_test)
 
+// NOLINTNEXTLINE
 #define TRACE_REQUIRE_EQUAL(l, r)                                                                                                    \
 	do                                                                                                                               \
 	{                                                                                                                                \
