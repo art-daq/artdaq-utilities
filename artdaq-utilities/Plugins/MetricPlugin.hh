@@ -4,32 +4,39 @@
 //
 // Defines the interface that any ARTDAQ metric plugin must implement
 
-#ifndef __METRIC_INTERFACE__
-#define __METRIC_INTERFACE__
+#ifndef ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_METRICPLUGIN_HH_
+#define ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_METRICPLUGIN_HH_
 
 #ifdef TRACE_NAME
 #pragma push_macro("TRACE_NAME")
 #undef TRACE_NAME
-#define TRACE_NAME "MetricPlugin" /* a simple const char * */
-#define TRACE_NAME_POP 1
+#define TRACE_NAME "MetricPlugin"  // a simple const char *
+#define TRACE_NAME_POP 1           // NOLINT
 #endif
 #include "TRACE/trace.h"  // TLOG(x,name)    Note:
 // MEtricTLOG
-#define METLOG(lvl) TLOG(lvl) << metric_name_ << ": "
-#define METLOG_P(lvl) TLOG(lvl, "MetricPlugin") << metric_name_ << ": "
+#define METLOG(lvl) TLOG(lvl) << metric_name_ << ": "                    // NOLINT
+#define METLOG_P(lvl) TLOG(lvl, "MetricPlugin") << metric_name_ << ": "  // NOLINT
 
-#include <bitset>
-#include <chrono>
-#include <string>
-#include <unordered_map>
+#include "artdaq-utilities/Plugins/MetricData.hh"
+
+#include "cetlib/compiler_macros.h"
 #include "fhiclcpp/ParameterSet.h"
 #include "fhiclcpp/types/Atom.h"
 #include "fhiclcpp/types/ConfigurationTable.h"
 #include "fhiclcpp/types/Sequence.h"
 
-#include "artdaq-utilities/Plugins/MetricData.hh"
-#include "cetlib/compiler_macros.h"
+#include <bitset>
+#include <chrono>
+#include <list>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
+
 #ifndef FALLTHROUGH
+// NOLINTNEXTLINE(build/define_used)
 #define FALLTHROUGH while (0)
 #endif
 
@@ -141,93 +148,11 @@ public:
 	 */
 	virtual ~MetricPlugin() = default;
 
-	///////////////////////////////////////////////////////////////////////////
-	//
-	// Interface Functions: These should be reimplemented in plugin classes!
-	//
-	///////////////////////////////////////////////////////////////////////////
-
 	/**
 	 * \brief Return the name of the current MetricPlugin instance
 	 */
 	virtual std::string getLibName() const { return "ERROR"; }
 
-protected:
-	/**
-	 * \brief Send a metric to the underlying metric storage (file, Graphite, Ganglia, etc.)
-	 * \param name Name of the metric
-	 * \param value Value of the metric
-	 * \param unit Units for the metric
-	 * \param interval_end End point of the aggregation interval
-	 *
-	 * Note this is a pure virtual function, it should be overridden by implementation plugins
-	 */
-	virtual void sendMetric_(const std::string& name, const std::string& value, const std::string& unit, const std::chrono::system_clock::time_point& interval_end) = 0;
-
-	/**
-	 * \brief Send a metric to the underlying metric storage (file, Graphite, Ganglia, etc.)
-	 * \param name Name of the metric
-	 * \param value Value of the metric
-	 * \param unit Units for the metric
-	 * \param interval_end End point of the aggregation interval
-	 *
-	 * Note this is a pure virtual function, it should be overridden by implementation plugins
-	 */
-	virtual void sendMetric_(const std::string& name, const int& value, const std::string& unit, const std::chrono::system_clock::time_point& interval_end) = 0;
-
-	/**
-	 * \brief Send a metric to the underlying metric storage (file, Graphite, Ganglia, etc.)
-	 * \param name Name of the metric
-	 * \param value Value of the metric
-	 * \param unit Units for the metric
-	 * \param interval_end End point of the aggregation interval
-	 *
-	 * Note this is a pure virtual function, it should be overridden by implementation plugins
-	 */
-	virtual void sendMetric_(const std::string& name, const double& value, const std::string& unit, const std::chrono::system_clock::time_point& interval_end) = 0;
-
-	/**
-	 * \brief Send a metric to the underlying metric storage (file, Graphite, Ganglia, etc.)
-	 * \param name Name of the metric
-	 * \param value Value of the metric
-	 * \param unit Units for the metric
-	 * \param interval_end End point of the aggregation interval
-	 *
-	 * Note this is a pure virtual function, it should be overridden by implementation plugins
-	 */
-	virtual void sendMetric_(const std::string& name, const float& value, const std::string& unit, const std::chrono::system_clock::time_point& interval_end) = 0;
-
-	/**
-	 * \brief Send a metric to the underlying metric storage (file, Graphite, Ganglia, etc.)
-	 * \param name Name of the metric
-	 * \param value Value of the metric
-	 * \param unit Units for the metric
-	 * \param interval_end End point of the aggregation interval
-	 *
-	 * Note this is a pure virtual function, it should be overridden by implementation plugins
-	 */
-	virtual void sendMetric_(const std::string& name, const uint64_t& value, const std::string& unit, const std::chrono::system_clock::time_point& interval_end) = 0;
-
-	/**
-	 * \brief Perform any start-up actions necessary for the metric plugin
-	 *
-	 * This is a pure virtual function, it should be overridden by implementation plugins
-	 */
-	virtual void startMetrics_() = 0;
-
-	/**
-	 * \brief Perform any shutdown actions necessary for the metric plugin
-	 *
-	 * This is a pure virtual function, it should be overridden by implementation plugins
-	 */
-	virtual void stopMetrics_() = 0;
-
-	/////////////////////////////////////////////////////////////////////////////////
-	//
-	// Implementation Functions: These should be called from ARTDAQ code!
-	//
-	/////////////////////////////////////////////////////////////////////////////////
-public:
 	/**
 	 * \brief Send a metric value to the MetricPlugin
 	 * \param data A MetricData struct containing the metric value
@@ -346,7 +271,7 @@ public:
 								average = (deltaMode ? delta.i : data.Value.i) / static_cast<double>(data.DataPointCount);
 								break;
 							case MetricType::UnsignedMetric:
-								average = (deltaMode ? delta.u : data.Value.u) / static_cast<double>(data.DataPointCount);
+								average = static_cast<double>(deltaMode ? delta.u : data.Value.u) / static_cast<double>(data.DataPointCount);
 								break;
 							default:
 								break;
@@ -371,7 +296,7 @@ public:
 								rate = (deltaMode ? delta.i : data.Value.i) / duration;
 								break;
 							case MetricType::UnsignedMetric:
-								rate = (deltaMode ? delta.u : data.Value.u) / duration;
+								rate = static_cast<double>(deltaMode ? delta.u : data.Value.u) / duration;
 								break;
 							default:
 								break;
@@ -466,6 +391,75 @@ public:
 	}
 
 protected:
+	/**
+	 * \brief Send a metric to the underlying metric storage (file, Graphite, Ganglia, etc.)
+	 * \param name Name of the metric
+	 * \param value Value of the metric
+	 * \param unit Units for the metric
+	 * \param interval_end End point of the aggregation interval
+	 *
+	 * Note this is a pure virtual function, it should be overridden by implementation plugins
+	 */
+	virtual void sendMetric_(const std::string& name, const std::string& value, const std::string& unit, const std::chrono::system_clock::time_point& interval_end) = 0;
+
+	/**
+	 * \brief Send a metric to the underlying metric storage (file, Graphite, Ganglia, etc.)
+	 * \param name Name of the metric
+	 * \param value Value of the metric
+	 * \param unit Units for the metric
+	 * \param interval_end End point of the aggregation interval
+	 *
+	 * Note this is a pure virtual function, it should be overridden by implementation plugins
+	 */
+	virtual void sendMetric_(const std::string& name, const int& value, const std::string& unit, const std::chrono::system_clock::time_point& interval_end) = 0;
+
+	/**
+	 * \brief Send a metric to the underlying metric storage (file, Graphite, Ganglia, etc.)
+	 * \param name Name of the metric
+	 * \param value Value of the metric
+	 * \param unit Units for the metric
+	 * \param interval_end End point of the aggregation interval
+	 *
+	 * Note this is a pure virtual function, it should be overridden by implementation plugins
+	 */
+	virtual void sendMetric_(const std::string& name, const double& value, const std::string& unit, const std::chrono::system_clock::time_point& interval_end) = 0;
+
+	/**
+	 * \brief Send a metric to the underlying metric storage (file, Graphite, Ganglia, etc.)
+	 * \param name Name of the metric
+	 * \param value Value of the metric
+	 * \param unit Units for the metric
+	 * \param interval_end End point of the aggregation interval
+	 *
+	 * Note this is a pure virtual function, it should be overridden by implementation plugins
+	 */
+	virtual void sendMetric_(const std::string& name, const float& value, const std::string& unit, const std::chrono::system_clock::time_point& interval_end) = 0;
+
+	/**
+	 * \brief Send a metric to the underlying metric storage (file, Graphite, Ganglia, etc.)
+	 * \param name Name of the metric
+	 * \param value Value of the metric
+	 * \param unit Units for the metric
+	 * \param interval_end End point of the aggregation interval
+	 *
+	 * Note this is a pure virtual function, it should be overridden by implementation plugins
+	 */
+	virtual void sendMetric_(const std::string& name, const uint64_t& value, const std::string& unit, const std::chrono::system_clock::time_point& interval_end) = 0;
+
+	/**
+	 * \brief Perform any start-up actions necessary for the metric plugin
+	 *
+	 * This is a pure virtual function, it should be overridden by implementation plugins
+	 */
+	virtual void startMetrics_() = 0;
+
+	/**
+	 * \brief Perform any shutdown actions necessary for the metric plugin
+	 *
+	 * This is a pure virtual function, it should be overridden by implementation plugins
+	 */
+	virtual void stopMetrics_() = 0;
+
 	fhicl::ParameterSet pset;     ///< The ParameterSet used to configure the MetricPlugin
 	double accumulationTime_;     ///< The amount of time to average metric values; except for accumulate=false metrics, will be the interval at which each metric is sent.
 	std::string app_name_;        ///< Name of the application which is sending metrics to this plugin
@@ -584,4 +578,4 @@ private:
 #pragma pop_macro("TRACE_NAME")
 #undef TRACE_NAME_POP
 #endif
-#endif  // End ifndef __METRIC_INTERFACE__
+#endif  // ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_METRICPLUGIN_HH_

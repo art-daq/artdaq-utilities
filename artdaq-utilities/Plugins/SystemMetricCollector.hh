@@ -1,9 +1,13 @@
+#ifndef ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_SYSTEMMETRICCOLLECTOR_HH_
+#define ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_SYSTEMMETRICCOLLECTOR_HH_
+
+#include "artdaq-utilities/Plugins/MetricData.hh"
+
 #include <sys/times.h>
 #include <list>
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include "artdaq-utilities/Plugins/MetricData.hh"
 
 namespace artdaq {
 /// <summary>
@@ -141,3 +145,5 @@ private:
 	bool sendSystemMetrics_;
 };
 }  // namespace artdaq
+
+#endif  // ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_SYSTEMMETRICCOLLECTOR_HH_

@@ -1,11 +1,14 @@
-#ifndef artdaq_Plugins_GPM_Macros_hh
-#define artdaq_Plugins_GPM_Macros_hh
+#ifndef ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_GPMMACROS_HH_
+#define ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_GPMMACROS_HH_
 
-#include <memory>
 #include "artdaq-utilities/Plugins/GPMPublisher.hh"
 #include "artdaq-utilities/Plugins/GPMSubscriber.hh"
+
 #include "cetlib/compiler_macros.h"
 #include "fhiclcpp/fwd.h"
+
+#include <memory>
+#include <string>
 
 namespace artdaq {
 /**
@@ -20,9 +23,11 @@ typedef std::unique_ptr<artdaq::GPMPublisher> makeFunc_t(fhicl::ParameterSet con
 }  // namespace artdaq
 
 #ifndef EXTERN_C_FUNC_DECLARE_START
+// NOLINTNEXTLINE(build/define_used)
 #define EXTERN_C_FUNC_DECLARE_START extern "C" {
 #endif
 
+// NOLINTNEXTLINE
 #define DEFINE_GPM_PUBLISHER(klass)                                                    \
 	EXTERN_C_FUNC_DECLARE_START                                                        \
 	std::unique_ptr<artdaq::GPMPublisher>                                              \
@@ -32,6 +37,7 @@ typedef std::unique_ptr<artdaq::GPMPublisher> makeFunc_t(fhicl::ParameterSet con
 	}                                                                                  \
 	}
 
+// NOLINTNEXTLINE
 #define DEFINE_GPM_SUBSCRIBER(klass)                                                    \
 	EXTERN_C_FUNC_DECLARE_START                                                         \
 	std::unique_ptr<artdaq::GPMSubscriber>                                              \
@@ -41,4 +47,4 @@ typedef std::unique_ptr<artdaq::GPMPublisher> makeFunc_t(fhicl::ParameterSet con
 	}                                                                                   \
 	}
 
-#endif /* artdaq_Plugins_GPM_Macros_hh */
+#endif  // ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_GPMMACROS_HH_

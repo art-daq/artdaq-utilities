@@ -52,17 +52,6 @@ namespace artdaq {
  */
 class WebsocketMetric final : public MetricPlugin
 {
-private:
-	int port_;
-	std::string namespace_;
-	boost::asio::io_context io_context_;
-	tcp::acceptor acceptor_;
-	// tcp::socket socket_;
-	bool stopped_;
-	bool stop_accepting_;
-	std::set<std::shared_ptr<boost::beast::websocket::stream<tcp::socket>>> connections_;
-	std::thread io_thread_;  // for io_context_.run() thread, we could use multiple if we run into performance issues
-
 public:
 	/**
 	 * \brief WebsocketMetric Constructor
@@ -119,7 +108,7 @@ public:
 		{
 			METLOG(TLVL_WARNING) << "In destructor of WebsocketMetric instance  on port " << port_ << ", the following boost::system::system_error exception was thrown out of a call to stopMetrics() and caught: " << err.code() << ", \"" << err.what() << "\"";
 		}
-		catch (...)
+		catch (...)  // NOLINT
 		{
 			METLOG(TLVL_WARNING) << "In destructor of WebsocketMetric instance on port " << port_ << ", an *unknown* exception was thrown out of a call to stopMetrics() and caught!";
 		}
@@ -299,6 +288,16 @@ private:
 			}
 		}
 	}
+
+	int port_;
+	std::string namespace_;
+	boost::asio::io_context io_context_;
+	tcp::acceptor acceptor_;
+	// tcp::socket socket_;
+	bool stopped_;
+	bool stop_accepting_;
+	std::set<std::shared_ptr<boost::beast::websocket::stream<tcp::socket>>> connections_;
+	std::thread io_thread_;  // for io_context_.run() thread, we could use multiple if we run into performance issues
 };
 }  // End namespace artdaq
 

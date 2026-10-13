@@ -22,17 +22,6 @@ namespace artdaq {
  */
 class ProcFileMetric final : public MetricPlugin
 {
-private:
-	std::string pipe_;
-	std::unordered_map<std::string, std::string> value_map_;
-	bool stopped_;
-	boost::thread thread_;
-
-	ProcFileMetric(const ProcFileMetric&) = delete;
-	ProcFileMetric(ProcFileMetric&&) = delete;
-	ProcFileMetric& operator=(const ProcFileMetric&) = delete;
-	ProcFileMetric& operator=(ProcFileMetric&&) = delete;
-
 public:
 	/**
 	 * \brief ProcFileMetric Constructor
@@ -160,7 +149,7 @@ public:
 			catch (boost::exception const& e)
 			{
 				TLOG(TLVL_ERROR) << "Creating ProcFile Metric thread failed! e: " << boost::diagnostic_information(e);
-				std::cerr << "Creating ProcFile Metric thread failed! e: " << boost::diagnostic_information(e) << std::endl;
+				std::cerr << "Creating ProcFile Metric thread failed! e: " << boost::diagnostic_information(e) << std::endl;  // NOLINT
 				exit(4);
 			}
 		}
@@ -215,13 +204,24 @@ public:
 				str += value.first + ": " + value.second + "\n";
 				// snprintf(buf, sizeof(buf), "%s: %lu\n", value.first.c_str(), value.second);
 			}
-			int sts = write(fd, str.c_str(), str.size());
+			int sts = write(fd, str.c_str(), str.size());  // NOLINT
 			METLOG(TLVL_DEBUG + 36) << "writePipe write complete sts=" << sts;
 			close(fd);
 			METLOG(TLVL_DEBUG + 36) << "writePipe after close -- about to usleep";
 			usleep(400000);  // must wait to make sure other end closes
 		}
 	}
+
+private:
+	ProcFileMetric(const ProcFileMetric&) = delete;
+	ProcFileMetric(ProcFileMetric&&) = delete;
+	ProcFileMetric& operator=(const ProcFileMetric&) = delete;
+	ProcFileMetric& operator=(ProcFileMetric&&) = delete;
+
+	std::string pipe_;
+	std::unordered_map<std::string, std::string> value_map_;
+	bool stopped_;
+	boost::thread thread_;
 };
 }  // End namespace artdaq
 

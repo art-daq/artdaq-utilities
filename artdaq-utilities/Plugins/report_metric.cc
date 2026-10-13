@@ -16,7 +16,6 @@
 #include <mutex>
 #include <sstream>
 #include <string>
-#include "TRACE/tracemf.h"
 
 namespace artdaq {
 /**
@@ -24,13 +23,6 @@ namespace artdaq {
  */
 class PeriodicReportMetric final : public MetricPlugin
 {
-private:
-	std::chrono::steady_clock::time_point last_report_time_;
-
-	std::map<std::string, std::string> metrics_;
-
-	std::mutex report_mutex_;
-
 public:
 	/**
 	 * \brief PeriodicReportMetric Constructor.
@@ -191,6 +183,12 @@ private:
 			}
 		}
 	}
+
+	std::chrono::steady_clock::time_point last_report_time_;
+
+	std::map<std::string, std::string> metrics_;
+
+	std::mutex report_mutex_;
 };
 }  // End namespace artdaq
 

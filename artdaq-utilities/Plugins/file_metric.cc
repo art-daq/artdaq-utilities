@@ -26,34 +26,6 @@ namespace artdaq {
  */
 class FileMetric final : public MetricPlugin
 {
-private:
-	std::string outputFile_;
-	bool file_name_is_absolute_path_;
-	std::string relative_env_var_;
-	bool uniquify_file_name_;
-	std::ofstream outputStream_;
-	std::ios_base::openmode mode_;
-	std::string timeformat_;
-	bool stopped_;
-
-	std::ostream& getTime_(std::ostream& stream, const std::chrono::system_clock::time_point& time)
-	{
-		std::time_t tt = std::chrono::system_clock::to_time_t(time);
-
-		struct std::tm* ptm = std::localtime(&tt);
-		if (!timeformat_.empty())
-		{
-			return stream << std::put_time(ptm, timeformat_.c_str()) << ": ";
-		}
-
-		return stream;
-	}
-
-	FileMetric(const FileMetric&) = delete;
-	FileMetric(FileMetric&&) = delete;
-	FileMetric& operator=(const FileMetric&) = delete;
-	FileMetric& operator=(FileMetric&&) = delete;
-
 public:
 	/**
 	 * \brief FileMetric Constructor. Opens the file and starts the metric
@@ -216,6 +188,24 @@ public:
 	}
 
 private:
+	FileMetric(const FileMetric&) = delete;
+	FileMetric(FileMetric&&) = delete;
+	FileMetric& operator=(const FileMetric&) = delete;
+	FileMetric& operator=(FileMetric&&) = delete;
+
+	std::ostream& getTime_(std::ostream& stream, const std::chrono::system_clock::time_point& time)
+	{
+		std::time_t tt = std::chrono::system_clock::to_time_t(time);
+
+		struct std::tm* ptm = std::localtime(&tt);
+		if (!timeformat_.empty())
+		{
+			return stream << std::put_time(ptm, timeformat_.c_str()) << ": ";
+		}
+
+		return stream;
+	}
+
 	void openFile_()
 	{
 		if (!file_name_is_absolute_path_)
@@ -294,11 +284,21 @@ private:
 			outputStream_.flush();
 			outputStream_.close();
 		}
-		catch (...)
+		catch (...)  // NOLINT
 		{
 			// IGNORED
 		}
 	}
+
+	std::string outputFile_;
+	bool file_name_is_absolute_path_;
+	std::string relative_env_var_;
+	bool uniquify_file_name_;
+	std::ofstream outputStream_;
+	std::ios_base::openmode mode_;
+	std::string timeformat_;
+	bool stopped_;
+
 };  // namespace artdaq
 }  // End namespace artdaq
 

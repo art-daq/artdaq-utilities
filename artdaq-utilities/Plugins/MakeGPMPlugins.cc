@@ -1,8 +1,11 @@
 #include "artdaq-utilities/Plugins/MakeGPMPlugins.hh"
 
 #include "artdaq-utilities/Plugins/GPMMacros.hh"
+
 #include "cetlib/BasicPluginFactory.h"
 #include "fhiclcpp/ParameterSet.h"
+
+#include <string>
 
 std::unique_ptr<artdaq::GPMPublisher>
 artdaq::makeGPMPublisher(std::string const& generator_plugin_spec, fhicl::ParameterSet const& ps, std::string const& application_name)

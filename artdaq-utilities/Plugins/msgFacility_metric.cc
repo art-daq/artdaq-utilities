@@ -21,15 +21,6 @@ namespace artdaq {
  */
 class MsgFacilityMetric final : public MetricPlugin
 {
-private:
-	std::string facility_;
-	int outputLevel_;
-
-	MsgFacilityMetric(const MsgFacilityMetric&) = delete;
-	MsgFacilityMetric(MsgFacilityMetric&&) = delete;
-	MsgFacilityMetric& operator=(const MsgFacilityMetric&) = delete;
-	MsgFacilityMetric& operator=(MsgFacilityMetric&&) = delete;
-
 public:
 	/**
 	 * \brief MsgFacilityMetric Constructor
@@ -173,6 +164,15 @@ public:
 	 * \brief Perform shutdown actions. No-Op.
 	 */
 	void stopMetrics_() override {}
+
+private:
+	MsgFacilityMetric(const MsgFacilityMetric&) = delete;
+	MsgFacilityMetric(MsgFacilityMetric&&) = delete;
+	MsgFacilityMetric& operator=(const MsgFacilityMetric&) = delete;
+	MsgFacilityMetric& operator=(MsgFacilityMetric&&) = delete;
+
+	std::string facility_;
+	int outputLevel_;
 };
 }  // End namespace artdaq
 

@@ -1,6 +1,6 @@
 
 #define TRACE_NAME "MetricManager_t"
-#include "trace.h"
+#include "TRACE/trace.h"
 
 #include "artdaq-utilities/Plugins/MetricManager.hh"
 #include "artdaq-utilities/Plugins/TestMetric.hh"
@@ -11,6 +11,7 @@
 
 BOOST_AUTO_TEST_SUITE(MetricManager_test)
 
+// NOLINTNEXTLINE
 #define TRACE_REQUIRE_EQUAL(l, r)                                                                                                    \
 	do                                                                                                                               \
 	{                                                                                                                                \

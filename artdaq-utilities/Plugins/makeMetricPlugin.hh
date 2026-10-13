@@ -1,11 +1,11 @@
-#ifndef artdaq_Plugins_makeMetricPlugin_hh
-#define artdaq_Plugins_makeMetricPlugin_hh
+#ifndef ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_MAKEMETRICPLUGIN_HH_
+#define ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_MAKEMETRICPLUGIN_HH_
 // Using LibraryManager, find the correct library and return an instance
 // of the specified generator.
 
 namespace fhicl {
 class ParameterSet;
-}
+}  // namespace fhicl
 
 #include <memory>
 #include <string>
@@ -28,4 +28,4 @@ std::unique_ptr<MetricPlugin>
 makeMetricPlugin(std::string const& generator_plugin_spec,
                  fhicl::ParameterSet const& ps, std::string const& app_name, std::string const& metric_name);
 }  // namespace artdaq
-#endif /* artdaq_Plugins_makeMetricPlugin_hh */
+#endif  // ARTDAQ_UTILITIES_ARTDAQ_UTILITIES_PLUGINS_MAKEMETRICPLUGIN_HH_
